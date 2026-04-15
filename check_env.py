@@ -1,58 +1,56 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import sys
+import os
+
 print("=" * 60)
-print("C2DFF-Net Environment Check")
+print("C²DFF-Net 环境检查")
 print("=" * 60)
-print(f"Python Version: {sys.version}")
-print()
 
-# Check basic packages
-required_packages = [
-    ('numpy', 'NumPy'),
-    ('matplotlib', 'Matplotlib'),
-    ('PIL', 'Pillow'),
-]
+# 1. 检查 Python 版本
+print("\n1. Python 版本:")
+print(f"   Python: {sys.version}")
+print(f"   路径: {sys.executable}")
 
-print("Checking basic packages:")
-for pkg, name in required_packages:
-    try:
-        module = __import__(pkg)
-        print(f"[OK] {name} installed (version: {getattr(module, '__version__', 'unknown')})")
-    except ImportError:
-        print(f"[FAIL] {name} not installed")
-
-print()
-
-# Check deep learning packages
-print("Checking deep learning packages:")
-deep_learning_packages = [
+# 2. 检查核心依赖库
+libraries = [
     ('torch', 'PyTorch'),
     ('torchvision', 'TorchVision'),
-    ('ultralytics', 'Ultralytics YOLO'),
+    ('ultralytics', 'Ultralytics (YOLO)'),
+    ('numpy', 'NumPy'),
     ('cv2', 'OpenCV'),
+    ('matplotlib', 'Matplotlib'),
 ]
 
-for pkg, name in deep_learning_packages:
+print("\n2. 核心依赖库检查:")
+for lib_module, lib_name in libraries:
     try:
-        module = __import__(pkg)
-        print(f"[OK] {name} installed (version: {getattr(module, '__version__', 'unknown')})")
+        module = __import__(lib_module)
+        version = getattr(module, '__version__', 'N/A')
+        print(f"   ✓ {lib_name}: {version}")
     except ImportError:
-        print(f"[FAIL] {name} not installed")
+        print(f"   ✗ {lib_name}: 未安装")
 
-print()
-print("=" * 60)
-
-# Check if PyTorch has CUDA support
+# 3. 检查 CUDA 可用性
+print("\n3. CUDA 检查:")
 try:
     import torch
-    print("PyTorch CUDA Info:")
-    print(f"  CUDA available: {torch.cuda.is_available()}")
+    print(f"   CUDA 可用: {torch.cuda.is_available()}")
     if torch.cuda.is_available():
-        print(f"  CUDA version: {torch.version.cuda}")
-        print(f"  Number of GPUs: {torch.cuda.device_count()}")
-        print(f"  Current GPU: {torch.cuda.get_device_name(0)}")
+        print(f"   CUDA 版本: {torch.version.cuda}")
+        print(f"   GPU 数量: {torch.cuda.device_count()}")
+        for i in range(torch.cuda.device_count()):
+            print(f"   GPU {i}: {torch.cuda.get_device_name(i)}")
 except ImportError:
-    pass
+    print("   PyTorch 未安装，无法检查 CUDA")
 
-print("=" * 60)
-print("Environment check completed!")
+# 4. 检查项目文件
+print("\n4. 项目文件检查:")
+project_files = ['README.md', 'requirements.txt', 'train.py', 'test.py']
+current_files = os.listdir('.')
+print(f"   当前目录文件: {current_files}")
+
+print("\n" + "=" * 60)
+print("检查完成！")
 print("=" * 60)
